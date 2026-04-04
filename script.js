@@ -205,7 +205,7 @@
   if (splash) {
     splash.addEventListener("click", enterSite);
     splash.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") {
+      if (e.key === " ") {
         e.preventDefault();
         enterSite();
       }

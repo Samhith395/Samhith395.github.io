@@ -19,20 +19,14 @@
   <body>
     <a class="sr-only" href="#main" id="skipLink">Skip to content</a>
 
-    <div
-      id="splash"
-      class="splash"
-      tabindex="0"
-      role="button"
-      aria-label="Enter portfolio"
-    >
-      <div class="splash-stars" id="splashStars" aria-hidden="true"></div>
-      <div class="splash-glow" aria-hidden="true"></div>
-      <div class="splash-inner">
-        <h1 class="splash-title">Welcome</h1>
-        <p class="splash-hint">Click anywhere to continue</p>
-      </div>
-    </div>
+    <button type="button" id="splash" class="splash" aria-label="Enter portfolio">
+      <span class="splash-stars" id="splashStars" aria-hidden="true"></span>
+      <span class="splash-glow" aria-hidden="true"></span>
+      <span class="splash-inner">
+        <span class="splash-title">Welcome</span>
+        <span class="splash-hint">Tap to continue</span>
+      </span>
+    </button>
 
     <div class="site-wrap" id="siteWrap" inert>
       <header class="site-header">
