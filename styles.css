@@ -508,19 +508,18 @@ section {
 }
 
 .music-track-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
   min-width: 0;
+  width: 100%;
 }
 
-.music-track-meta {
-  display: flex;
+/* One row: elapsed | seek | duration — same baseline as the bar, ends aligned with bar ends */
+.music-track-scrub {
+  display: grid;
+  grid-template-columns: auto minmax(2rem, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  column-gap: 0.45rem;
+  width: 100%;
   min-width: 0;
-  line-height: 1;
 }
 
 .music-time {
@@ -532,14 +531,19 @@ section {
 }
 
 .music-time-current {
-  text-align: left;
+  grid-column: 1;
+  text-align: right;
+  min-width: 4.25ch;
 }
 
 .music-time-total {
-  text-align: right;
+  grid-column: 3;
+  text-align: left;
+  min-width: 4.25ch;
 }
 
 .music-seek {
+  grid-column: 2;
   width: 100%;
   min-width: 0;
   height: 6px;
@@ -547,6 +551,7 @@ section {
   padding: 0;
   box-sizing: border-box;
   display: block;
+  align-self: center;
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
@@ -714,12 +719,9 @@ section {
     gap: 0.28rem;
   }
 
-  .music-track-block {
-    gap: 0.12rem;
-  }
-
-  .music-track-meta {
-    font-size: 0.6rem;
+  .music-track-scrub {
+    column-gap: 0.35rem;
+    grid-template-columns: auto minmax(1.5rem, 1fr) auto;
   }
 
   .music-time {
