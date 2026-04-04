@@ -243,10 +243,24 @@
     return maxEnd;
   }
 
+  function beginMusicPlayback() {
+    playCurrent();
+    audio.addEventListener(
+      "canplay",
+      function () {
+        if (audio.paused) {
+          playCurrent();
+        }
+      },
+      { once: true }
+    );
+  }
+
   function scheduleIntroRevealDone() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       forcePageTop();
       document.body.classList.add("intro-reveal-done");
+      beginMusicPlayback();
       return;
     }
     window.requestAnimationFrame(function () {
@@ -258,6 +272,7 @@
         window.setTimeout(function () {
           forcePageTop();
           document.body.classList.add("intro-reveal-done");
+          beginMusicPlayback();
         }, wait);
       });
     });
@@ -278,16 +293,6 @@
       siteWrap.removeAttribute("inert");
     }
     scheduleIntroRevealDone();
-    playCurrent();
-    audio.addEventListener(
-      "canplay",
-      function () {
-        if (audio.paused) {
-          playCurrent();
-        }
-      },
-      { once: true }
-    );
   }
 
   fillStars();

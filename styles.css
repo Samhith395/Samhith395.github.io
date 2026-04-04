@@ -452,34 +452,30 @@ section {
   accent-color: var(--accent);
 }
 
-/* Floating music dock — desktop: now | transport centered in gap | aligned sliders rail */
+/* Floating music dock — simple layout: now | transport | (track + volume stacks) */
 .music-dock {
   position: fixed;
   z-index: 100;
   left: 50%;
-  bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+  bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
-  width: min(calc(100vw - 1rem), 52rem);
-  max-width: calc(100vw - 1rem);
+  width: min(calc(100vw - 1.25rem), 50rem);
+  max-width: calc(100vw - 1.25rem);
   box-sizing: border-box;
 }
 
 .music-dock-inner {
   display: grid;
-  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) minmax(18rem, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-columns: minmax(0, 1.05fr) auto minmax(14rem, 1fr);
   align-items: center;
-  column-gap: 0.75rem;
-  row-gap: 0.45rem;
-  padding: 0.5rem 0.75rem;
-  min-height: 4.65rem;
-  overflow: visible;
-  border-radius: 12px;
+  column-gap: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: rgba(15, 17, 24, 0.94);
   backdrop-filter: blur(14px);
   box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.4),
+    0 10px 32px rgba(0, 0, 0, 0.42),
     0 0 0 1px rgba(0, 162, 255, 0.1);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 }
@@ -488,54 +484,43 @@ section {
   .music-dock-inner:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 12px 36px rgba(0, 0, 0, 0.45),
-      0 0 0 1px rgba(0, 162, 255, 0.18);
+      0 14px 40px rgba(0, 0, 0, 0.48),
+      0 0 0 1px rgba(0, 162, 255, 0.16);
   }
 }
 
 .music-now {
   grid-column: 1;
-  grid-row: 1 / -1;
-  align-self: center;
+  grid-row: 1;
   min-width: 0;
-  max-width: min(44vw, 15rem);
-  padding-right: 0;
+  max-width: min(42vw, 14rem);
   line-height: 1.25;
 }
 
-/* Sliders rail: 3 rows × 2 cols — same track column for seek + volume (equal width). No display:contents (avoids two-column seek|vol bug when unsupported). */
-.music-sliders-rail {
+.music-controls {
   grid-column: 3;
-  grid-row: 1 / -1;
-  align-self: center;
-  display: grid;
-  grid-template-columns: max-content minmax(12rem, 1fr);
-  grid-template-rows: auto auto auto;
-  column-gap: 0.5rem;
-  row-gap: 0.3rem;
-  align-items: center;
-  justify-items: stretch;
-  width: 100%;
-  max-width: 100%;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
   min-width: 0;
-  overflow: visible;
+  width: 100%;
 }
 
-.music-rail-duration-line {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-  align-self: end;
+.music-track-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.music-track-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   min-width: 0;
   line-height: 1;
-}
-
-.music-time-current {
-  grid-column: 1;
-  grid-row: 2;
-  text-align: left;
-  align-self: center;
-  min-width: 0;
 }
 
 .music-time {
@@ -546,16 +531,16 @@ section {
   white-space: nowrap;
 }
 
+.music-time-current {
+  text-align: left;
+}
+
 .music-time-total {
   text-align: right;
-  display: inline-block;
 }
 
 .music-seek {
-  grid-column: 2;
-  grid-row: 2;
   width: 100%;
-  max-width: 100%;
   min-width: 0;
   height: 6px;
   margin: 0;
@@ -565,6 +550,13 @@ section {
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
+}
+
+.music-vol-block {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
 }
 
 .music-now-label {
@@ -592,7 +584,7 @@ section {
 
 .music-transport {
   grid-column: 2;
-  grid-row: 1 / -1;
+  grid-row: 1;
   align-self: center;
   justify-self: center;
   display: flex;
@@ -600,7 +592,6 @@ section {
   justify-content: center;
   gap: 0.35rem;
   flex-shrink: 0;
-  min-width: 0;
   width: max-content;
 }
 
@@ -652,11 +643,8 @@ section {
 }
 
 .music-vol-label {
-  grid-column: 1;
-  grid-row: 3;
-  align-self: center;
+  flex: 0 0 auto;
   margin: 0;
-  text-align: left;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   text-transform: uppercase;
@@ -666,11 +654,9 @@ section {
 }
 
 .music-vol-slider {
-  grid-column: 2;
-  grid-row: 3;
-  width: 100%;
-  max-width: 100%;
+  flex: 1;
   min-width: 0;
+  width: 100%;
   height: 6px;
   margin: 0;
   padding: 0;
@@ -682,77 +668,42 @@ section {
 
 @media (max-width: 720px) {
   .music-dock {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
+    left: max(0.6rem, env(safe-area-inset-left, 0px));
+    right: max(0.6rem, env(safe-area-inset-right, 0px));
+    bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
+    width: auto;
     max-width: none;
     transform: none;
+    padding-inline: 0;
   }
 
   .music-dock-inner {
-    border-radius: var(--radius) var(--radius) 0 0;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto auto;
     align-items: start;
-    column-gap: 0.5rem;
-    row-gap: 0.5rem;
-    min-height: unset;
-    padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    column-gap: 0.55rem;
+    row-gap: 0.6rem;
+    padding: 0.65rem 0.75rem;
   }
 
   .music-now {
     grid-column: 1;
     grid-row: 1;
     max-width: none;
-    text-align: left;
-    padding-right: 0;
-    align-self: center;
   }
 
   .music-transport {
     grid-column: 2;
     grid-row: 1;
-    align-self: center;
     justify-self: end;
+    align-self: start;
+    padding-top: 0.1rem;
   }
 
-  .music-sliders-rail {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    grid-template-rows: auto auto auto;
+  .music-controls {
     grid-column: 1 / -1;
     grid-row: 2;
-    column-gap: 0.45rem;
-    row-gap: 0.35rem;
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .music-rail-duration-line {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .music-time-current {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .music-seek {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .music-vol-label {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  .music-vol-slider {
-    grid-column: 2;
-    grid-row: 3;
+    gap: 0.5rem;
   }
 
   .music-title {
@@ -761,11 +712,11 @@ section {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
   }
 
   .music-now-label {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
   }
 
   .music-btn {
@@ -780,7 +731,7 @@ section {
   }
 
   body {
-    padding-bottom: clamp(10rem, 28vh, 13rem);
+    padding-bottom: clamp(11rem, 30vh, 14rem);
   }
 }
 
@@ -809,32 +760,16 @@ section {
 }
 
 .intro-appear {
-  --enter-y: clamp(-64px, -14vw, -108px);
+  --enter-y: -76px;
   opacity: 0;
   transform: translate3d(0, var(--enter-y), 0);
   filter: blur(10px);
 }
 
+/* Same timing as former “mobile” preset on all viewports */
 body.splash-done .intro-appear {
-  animation: enter-drop-fade 1.28s cubic-bezier(0.2, 0.88, 0.2, 1) forwards;
-  animation-delay: calc(var(--enter-order) * 0.14s);
-}
-
-@media (max-width: 600px) {
-  .intro-appear {
-    --enter-y: -80px;
-  }
-
-  body.splash-done .intro-appear {
-    animation-duration: 1.12s;
-    animation-delay: calc(var(--enter-order) * 0.12s);
-  }
-}
-
-@media (min-width: 1100px) {
-  body.splash-done .intro-appear {
-    animation-duration: 1.4s;
-  }
+  animation: enter-drop-fade 1.12s cubic-bezier(0.2, 0.88, 0.2, 1) forwards;
+  animation-delay: calc(var(--enter-order) * 0.12s);
 }
 
 .site-header nav.intro-appear {
