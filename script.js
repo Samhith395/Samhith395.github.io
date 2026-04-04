@@ -30,6 +30,33 @@
   var siteWrap = document.getElementById("siteWrap");
   var skipLink = document.getElementById("skipLink");
 
+  try {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  } catch (eRestore) {}
+
+  function forcePageTop() {
+    var html = document.documentElement;
+    var b = document.body;
+    html.style.scrollBehavior = "auto";
+    if (b) {
+      b.style.scrollBehavior = "auto";
+    }
+    window.scrollTo(0, 0);
+    html.scrollTop = 0;
+    if (b) {
+      b.scrollTop = 0;
+    }
+    html.style.scrollBehavior = "";
+    if (b) {
+      b.style.scrollBehavior = "";
+    }
+  }
+
+  forcePageTop();
+  window.addEventListener("load", forcePageTop);
+
   if (!audio || !playlist.length) {
     return;
   }
@@ -218,6 +245,7 @@
 
   function scheduleIntroRevealDone() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      forcePageTop();
       document.body.classList.add("intro-reveal-done");
       return;
     }
@@ -228,6 +256,7 @@
           wait = 3200;
         }
         window.setTimeout(function () {
+          forcePageTop();
           document.body.classList.add("intro-reveal-done");
         }, wait);
       });
@@ -239,6 +268,7 @@
       return;
     }
     entered = true;
+    forcePageTop();
     document.body.classList.add("splash-done");
     if (splash) {
       splash.classList.add("splash--hidden");

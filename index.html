@@ -130,8 +130,8 @@
           <button type="button" class="music-btn" id="musicNext" aria-label="Next track">›</button>
         </div>
         <div class="music-sliders-rail">
-          <div class="music-rail-head">
-            <span class="music-time music-time-current" id="musicTimeCurrent" aria-hidden="true">0:00</span>
+          <span class="music-time music-time-current" id="musicTimeCurrent" aria-hidden="true">0:00</span>
+          <div class="music-rail-total-wrap">
             <span class="music-time music-time-total" id="musicTimeTotal" aria-hidden="true">0:00</span>
           </div>
           <input
@@ -146,18 +146,16 @@
             aria-valuemax="100"
             aria-valuenow="0"
           />
-          <div class="music-volume">
-            <label class="music-vol-label" for="musicVol">Volume</label>
-            <input
-              type="range"
-              class="music-vol-slider"
-              id="musicVol"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.5"
-            />
-          </div>
+          <label class="music-vol-label" for="musicVol">Volume</label>
+          <input
+            type="range"
+            class="music-vol-slider"
+            id="musicVol"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
         </div>
       </div>
     </div>

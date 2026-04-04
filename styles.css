@@ -215,7 +215,6 @@ button.splash {
 
 .site-wrap {
   opacity: 0;
-  transition: opacity 0.4s ease;
 }
 
 body.splash-done .site-wrap {
@@ -236,9 +235,6 @@ body.splash-done .site-wrap {
     opacity: 0.75;
   }
 
-  .site-wrap {
-    transition: opacity 0.2s ease;
-  }
 }
 
 a {
@@ -470,7 +466,7 @@ section {
 
 .music-dock-inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) minmax(0, auto);
   grid-template-rows: auto auto;
   align-items: center;
   column-gap: 0.85rem;
@@ -511,23 +507,34 @@ section {
   grid-row: 1 / -1;
   align-self: center;
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content minmax(0, 1fr);
   grid-template-rows: auto auto auto;
   column-gap: 0.45rem;
-  row-gap: 0.32rem;
+  row-gap: 0.28rem;
   align-items: center;
-  min-width: min(20.5rem, 38vw);
+  justify-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 0;
 }
 
-.music-rail-head {
-  grid-column: 1 / -1;
+.music-time-current {
+  grid-column: 1;
+  grid-row: 1;
+  text-align: left;
+  justify-self: start;
+  min-width: 0;
+}
+
+.music-rail-total-wrap {
+  grid-column: 2;
   grid-row: 1;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: baseline;
-  gap: 0.75rem;
   min-width: 0;
+  width: 100%;
 }
 
 .music-time {
@@ -536,27 +543,23 @@ section {
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   flex-shrink: 0;
-  min-width: 2.15rem;
-}
-
-.music-time-current {
-  text-align: left;
-  min-width: 4.25ch;
+  white-space: nowrap;
 }
 
 .music-time-total {
   text-align: right;
-  min-width: 4.25ch;
-  margin-left: auto;
 }
 
 .music-seek {
   grid-column: 2;
   grid-row: 2;
   width: 100%;
-  min-width: 3.75rem;
+  max-width: 100%;
+  min-width: 0;
   height: 5px;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
@@ -646,11 +649,6 @@ section {
   background: rgba(0, 162, 255, 0.28);
 }
 
-.music-volume {
-  display: contents;
-  min-width: 0;
-}
-
 .music-vol-label {
   grid-column: 1;
   grid-row: 3;
@@ -663,14 +661,19 @@ section {
   letter-spacing: 0.06em;
   color: var(--text-muted);
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .music-vol-slider {
   grid-column: 2;
   grid-row: 3;
   width: 100%;
+  max-width: 100%;
   min-width: 0;
   height: 5px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   accent-color: var(--accent);
   cursor: pointer;
 }
@@ -715,60 +718,25 @@ section {
   .music-sliders-rail {
     grid-column: 1 / -1;
     grid-row: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
     min-width: 0;
     width: 100%;
+    max-width: 100%;
+    row-gap: 0.4rem;
   }
 
-  .music-rail-head {
-    display: flex;
-    width: 100%;
-    grid-column: unset;
-    grid-row: unset;
-    gap: 0.5rem;
-  }
-
-  .music-volume {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.55rem;
-    width: 100%;
+  .music-rail-total-wrap {
+    min-width: 0;
   }
 
   .music-time-current {
-    text-align: left;
-    min-width: 2.15rem;
-    margin-left: 0;
-  }
-
-  .music-time-total {
-    min-width: 2.15rem;
-    margin-left: auto;
-  }
-
-  .music-seek {
-    width: 100%;
     min-width: 0;
-    flex: none;
   }
 
-  .music-vol-label {
-    flex-shrink: 0;
-    width: auto;
-    grid-column: unset;
-    grid-row: unset;
-  }
-
+  .music-seek,
   .music-vol-slider {
-    flex: 1;
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
-    max-width: none;
-    width: auto;
-    grid-column: unset;
-    grid-row: unset;
   }
 
   .music-title {
@@ -801,17 +769,12 @@ section {
 }
 
 @media (max-width: 380px) {
-  .music-rail-head {
-    gap: 0.35rem;
-  }
-
   .music-time {
     font-size: 0.62rem;
-    min-width: 2rem;
   }
 }
 
-/* After splash: drop with blur clearing at mid-travel (50% keyframe) */
+/* One continuous translate (transform only at 0% + 100%); blur clears by 50% */
 @keyframes enter-drop-fade {
   0% {
     opacity: 0;
@@ -820,7 +783,6 @@ section {
   }
   50% {
     opacity: 1;
-    transform: translate3d(0, calc(var(--enter-y) / 2), 0);
     filter: blur(0);
   }
   100% {
@@ -835,7 +797,6 @@ section {
   opacity: 0;
   transform: translate3d(0, var(--enter-y), 0);
   filter: blur(10px);
-  will-change: opacity, transform, filter;
 }
 
 body.splash-done .intro-appear {
