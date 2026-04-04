@@ -63,8 +63,10 @@ body {
     radial-gradient(ellipse 60% 40% at 100% 50%, rgba(61, 220, 132, 0.06), transparent);
 }
 
-body:not(.splash-done) {
+body:not(.splash-done),
+body.splash-done:not(.intro-reveal-done) {
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* Welcome splash — button reduces Android/Brave tap flash vs div */
@@ -454,7 +456,7 @@ section {
   accent-color: var(--accent);
 }
 
-/* Floating music dock — now | [transport / seek] | compact volume */
+/* Floating music dock — desktop: now | centered transport | stacked seek + volume */
 .music-dock {
   position: fixed;
   z-index: 100;
@@ -468,12 +470,13 @@ section {
 
 .music-dock-inner {
   display: grid;
-  grid-template-columns: minmax(9.5rem, 28%) minmax(0, 1fr) 6rem;
-  grid-template-rows: auto auto;
-  align-items: center;
-  column-gap: 0.65rem;
-  row-gap: 0.3rem;
-  padding: 0.45rem 0.65rem;
+  grid-template-columns: minmax(9.5rem, 1fr) auto minmax(12rem, 1.15fr);
+  grid-template-rows: 1fr 1fr;
+  align-items: stretch;
+  column-gap: 0.75rem;
+  row-gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  min-height: 4.65rem;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: rgba(15, 17, 24, 0.94);
@@ -498,17 +501,19 @@ section {
   grid-row: 1 / -1;
   align-self: center;
   min-width: 0;
-  padding-right: 0.1rem;
+  padding-right: 0.25rem;
   line-height: 1.25;
 }
 
 .music-seek-block {
-  grid-column: 2;
-  grid-row: 2;
+  grid-column: 3;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.22rem;
+  justify-content: center;
+  gap: 0.15rem;
   min-width: 0;
+  align-self: stretch;
 }
 
 .music-seek-row {
@@ -534,7 +539,8 @@ section {
 .music-seek {
   flex: 1;
   min-width: 2.5rem;
-  height: 4px;
+  width: 100%;
+  height: 5px;
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
@@ -565,7 +571,8 @@ section {
 
 .music-transport {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 1 / -1;
+  align-self: center;
   justify-self: center;
   display: flex;
   align-items: center;
@@ -624,14 +631,14 @@ section {
 
 .music-volume {
   grid-column: 3;
-  grid-row: 1 / -1;
-  align-self: center;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  gap: 0.32rem;
+  gap: 0.28rem;
   min-width: 0;
+  align-self: stretch;
 }
 
 @media (max-width: 720px) {
@@ -648,8 +655,10 @@ section {
     border-radius: var(--radius) var(--radius) 0 0;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto auto auto;
+    align-items: start;
     column-gap: 0.5rem;
     row-gap: 0.5rem;
+    min-height: unset;
     padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
   }
 
@@ -658,13 +667,14 @@ section {
     grid-row: 1;
     text-align: left;
     padding-right: 0;
+    align-self: center;
   }
 
   .music-transport {
     grid-column: 2;
     grid-row: 1;
-    justify-self: end;
     align-self: center;
+    justify-self: end;
   }
 
   .music-seek-block {
@@ -738,7 +748,11 @@ section {
   letter-spacing: 0.06em;
   color: var(--text-muted);
   flex-shrink: 0;
-  text-align: center;
+  text-align: left;
+}
+
+.music-dock-inner .music-vol-label {
+  text-align: left;
 }
 
 .music-vol-slider {
@@ -746,20 +760,27 @@ section {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  height: 6px;
+  height: 5px;
   accent-color: var(--accent);
   cursor: pointer;
 }
 
-/* After splash: single-phase drop + fade (no scale — avoids “blur then sharpen” on mobile GPUs) */
+/* After splash: drop with blur clearing at mid-travel (50% keyframe) */
 @keyframes enter-drop-fade {
-  from {
+  0% {
     opacity: 0;
     transform: translate3d(0, var(--enter-y), 0);
+    filter: blur(10px);
   }
-  to {
+  50% {
+    opacity: 1;
+    transform: translate3d(0, calc(var(--enter-y) / 2), 0);
+    filter: blur(0);
+  }
+  100% {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+    filter: blur(0);
   }
 }
 
@@ -767,7 +788,8 @@ section {
   --enter-y: clamp(-64px, -14vw, -108px);
   opacity: 0;
   transform: translate3d(0, var(--enter-y), 0);
-  will-change: opacity, transform;
+  filter: blur(10px);
+  will-change: opacity, transform, filter;
 }
 
 body.splash-done .intro-appear {

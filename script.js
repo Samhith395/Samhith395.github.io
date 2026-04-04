@@ -174,6 +174,66 @@
     playCurrent();
   }
 
+  function parseCssTimeToMs(value) {
+    var s = String(value || "").trim();
+    if (!s || s === "0s" || s === "0ms") {
+      return 0;
+    }
+    if (s.endsWith("ms")) {
+      return parseFloat(s);
+    }
+    if (s.endsWith("s")) {
+      return parseFloat(s) * 1000;
+    }
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function maxIntroAnimationEndMs() {
+    var els = document.querySelectorAll(".intro-appear");
+    var maxEnd = 0;
+    var i;
+    var j;
+    for (i = 0; i < els.length; i++) {
+      var cs = getComputedStyle(els[i]);
+      var names = cs.animationName.split(",").map(function (x) {
+        return x.trim();
+      });
+      var delays = cs.animationDelay.split(",");
+      var durs = cs.animationDuration.split(",");
+      for (j = 0; j < names.length; j++) {
+        if (!names[j] || names[j] === "none") {
+          continue;
+        }
+        var delay = parseCssTimeToMs(delays[j] !== undefined ? delays[j] : delays[0]);
+        var dur = parseCssTimeToMs(durs[j] !== undefined ? durs[j] : durs[0]);
+        var end = delay + dur;
+        if (end > maxEnd) {
+          maxEnd = end;
+        }
+      }
+    }
+    return maxEnd;
+  }
+
+  function scheduleIntroRevealDone() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.body.classList.add("intro-reveal-done");
+      return;
+    }
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        var wait = maxIntroAnimationEndMs() + 80;
+        if (wait <= 80) {
+          wait = 3200;
+        }
+        window.setTimeout(function () {
+          document.body.classList.add("intro-reveal-done");
+        }, wait);
+      });
+    });
+  }
+
   function enterSite() {
     if (entered) {
       return;
@@ -187,6 +247,7 @@
     if (siteWrap) {
       siteWrap.removeAttribute("inert");
     }
+    scheduleIntroRevealDone();
     playCurrent();
     audio.addEventListener(
       "canplay",
