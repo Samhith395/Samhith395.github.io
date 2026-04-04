@@ -497,29 +497,19 @@ section {
   line-height: 1.25;
 }
 
+/* Shared 3-column grid: col1 = times + “Volume” (same left edge); col2 = seek + vol start (same gap after labels); col3 = end time; vol slider spans 2–3 so its end lines up with end time */
 .music-controls {
   grid-column: 3;
   grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  min-width: 0;
-  width: 100%;
-}
-
-.music-track-block {
-  min-width: 0;
-  width: 100%;
-}
-
-/* One row: elapsed | seek | duration — same baseline as the bar, ends aligned with bar ends */
-.music-track-scrub {
   display: grid;
-  grid-template-columns: auto minmax(2rem, 1fr) auto;
-  align-items: center;
+  grid-template-columns: max-content 1fr max-content;
+  grid-template-rows: auto auto;
   column-gap: 0.45rem;
-  width: 100%;
+  row-gap: 0.36rem;
+  align-items: center;
+  justify-items: stretch;
   min-width: 0;
+  width: 100%;
 }
 
 .music-time {
@@ -532,18 +522,21 @@ section {
 
 .music-time-current {
   grid-column: 1;
-  text-align: right;
-  min-width: 4.25ch;
+  grid-row: 1;
+  justify-self: start;
+  text-align: left;
 }
 
 .music-time-total {
   grid-column: 3;
-  text-align: left;
-  min-width: 4.25ch;
+  grid-row: 1;
+  justify-self: end;
+  text-align: right;
 }
 
 .music-seek {
   grid-column: 2;
+  grid-row: 1;
   width: 100%;
   min-width: 0;
   height: 6px;
@@ -555,13 +548,6 @@ section {
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
-}
-
-.music-vol-block {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-width: 0;
 }
 
 .music-now-label {
@@ -648,8 +634,11 @@ section {
 }
 
 .music-vol-label {
-  flex: 0 0 auto;
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
   margin: 0;
+  text-align: left;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   text-transform: uppercase;
@@ -659,9 +648,10 @@ section {
 }
 
 .music-vol-slider {
-  flex: 1;
-  min-width: 0;
+  grid-column: 2 / -1;
+  grid-row: 2;
   width: 100%;
+  min-width: 0;
   height: 6px;
   margin: 0;
   padding: 0;
@@ -716,12 +706,9 @@ section {
   .music-controls {
     grid-column: 1 / -1;
     grid-row: 2;
-    gap: 0.28rem;
-  }
-
-  .music-track-scrub {
+    grid-template-columns: max-content 1fr max-content;
     column-gap: 0.35rem;
-    grid-template-columns: auto minmax(1.5rem, 1fr) auto;
+    row-gap: 0.26rem;
   }
 
   .music-time {
@@ -744,10 +731,6 @@ section {
   .music-seek,
   .music-vol-slider {
     height: 4px;
-  }
-
-  .music-vol-block {
-    gap: 0.4rem;
   }
 
   .music-vol-label {
