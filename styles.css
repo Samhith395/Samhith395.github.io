@@ -89,6 +89,8 @@ button.splash {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: env(safe-area-inset-top, 0px) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
   touch-action: manipulation;
   user-select: none;
@@ -166,8 +168,9 @@ button.splash {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: min(92vw, 28rem);
+  box-sizing: border-box;
+  width: min(92vw, 28rem);
+  margin-inline: auto;
   padding: 1.5rem;
   gap: 0.85rem;
   text-align: center;
@@ -451,7 +454,7 @@ section {
   accent-color: var(--accent);
 }
 
-/* Floating music dock — track | transport + seek | volume (wide slider) */
+/* Floating music dock — now | [transport / seek] | compact volume */
 .music-dock {
   position: fixed;
   z-index: 100;
@@ -465,10 +468,11 @@ section {
 
 .music-dock-inner {
   display: grid;
-  grid-template-columns: minmax(11rem, 32%) minmax(0, 1fr) minmax(10rem, 20rem);
+  grid-template-columns: minmax(9.5rem, 28%) minmax(0, 1fr) 6rem;
+  grid-template-rows: auto auto;
   align-items: center;
-  column-gap: 0.75rem;
-  row-gap: 0;
+  column-gap: 0.65rem;
+  row-gap: 0.3rem;
   padding: 0.45rem 0.65rem;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -480,27 +484,31 @@ section {
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 }
 
-.music-dock-inner:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(0, 162, 255, 0.18);
+@media (hover: hover) and (pointer: fine) {
+  .music-dock-inner:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(0, 162, 255, 0.18);
+  }
 }
 
 .music-now {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: center;
   min-width: 0;
-  padding-right: 0.15rem;
+  padding-right: 0.1rem;
   line-height: 1.25;
 }
 
-.music-center {
+.music-seek-block {
+  grid-column: 2;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: 0.22rem;
   min-width: 0;
-  justify-content: center;
-  padding: 0;
 }
 
 .music-seek-row {
@@ -556,11 +564,15 @@ section {
 }
 
 .music-transport {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .music-btn {
@@ -611,30 +623,72 @@ section {
 }
 
 .music-volume {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  align-self: center;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.32rem;
   min-width: 0;
-  justify-self: stretch;
-  flex-wrap: nowrap;
 }
 
 @media (max-width: 720px) {
   .music-dock {
-    width: calc(100vw - 0.9rem);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: none;
+    transform: none;
   }
 
   .music-dock-inner {
-    grid-template-columns: 1fr;
+    border-radius: var(--radius) var(--radius) 0 0;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto auto auto;
-    padding: 0.5rem 0.6rem 0.55rem;
-    gap: 0.55rem;
-    column-gap: 0;
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+    padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
   }
 
   .music-now {
-    text-align: center;
+    grid-column: 1;
+    grid-row: 1;
+    text-align: left;
     padding-right: 0;
+  }
+
+  .music-transport {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+  }
+
+  .music-seek-block {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .music-volume {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .music-vol-label {
+    flex-shrink: 0;
+    width: auto;
+  }
+
+  .music-vol-slider {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
   }
 
   .music-title {
@@ -650,10 +704,6 @@ section {
     font-size: 0.68rem;
   }
 
-  .music-center {
-    order: 0;
-  }
-
   .music-btn {
     width: 34px;
     height: 34px;
@@ -663,17 +713,6 @@ section {
   .music-btn-primary {
     width: 38px;
     height: 38px;
-  }
-
-  .music-volume {
-    justify-content: center;
-    max-width: min(26rem, 100%);
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .music-vol-label {
-    width: auto;
   }
 
   body {
@@ -694,60 +733,62 @@ section {
 
 .music-vol-label {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
   flex-shrink: 0;
+  text-align: center;
 }
 
 .music-vol-slider {
   flex: 1 1 auto;
-  min-width: 10rem;
+  min-width: 0;
   width: 100%;
+  max-width: 100%;
   height: 6px;
   accent-color: var(--accent);
   cursor: pointer;
 }
 
-/* After splash: clear downward motion only (no blur — reads as “real” movement) */
+/* After splash: single-phase drop + fade (no scale — avoids “blur then sharpen” on mobile GPUs) */
 @keyframes enter-drop-fade {
-  0% {
+  from {
     opacity: 0;
-    transform: translate3d(0, var(--enter-y), 0) scale(0.93);
+    transform: translate3d(0, var(--enter-y), 0);
   }
-  55% {
+  to {
     opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .intro-appear {
+  --enter-y: clamp(-64px, -14vw, -108px);
   opacity: 0;
-  transform: translate3d(0, -72px, 0) scale(0.93);
+  transform: translate3d(0, var(--enter-y), 0);
   will-change: opacity, transform;
 }
 
 body.splash-done .intro-appear {
-  --enter-y: clamp(-72px, -17vw, -120px);
-  animation: enter-drop-fade 1.35s cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
-  animation-delay: calc(var(--enter-order) * 0.16s);
+  animation: enter-drop-fade 1.28s cubic-bezier(0.2, 0.88, 0.2, 1) forwards;
+  animation-delay: calc(var(--enter-order) * 0.14s);
 }
 
 @media (max-width: 600px) {
+  .intro-appear {
+    --enter-y: -80px;
+  }
+
   body.splash-done .intro-appear {
-    --enter-y: -88px;
-    animation-duration: 1.25s;
-    animation-delay: calc(var(--enter-order) * 0.14s);
+    animation-duration: 1.12s;
+    animation-delay: calc(var(--enter-order) * 0.12s);
   }
 }
 
 @media (min-width: 1100px) {
   body.splash-done .intro-appear {
-    animation-duration: 1.45s;
+    animation-duration: 1.4s;
   }
 }
 
