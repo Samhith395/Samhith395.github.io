@@ -466,13 +466,14 @@ section {
 
 .music-dock-inner {
   display: grid;
-  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) minmax(0, auto);
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) minmax(22rem, 1.25fr);
   grid-template-rows: auto auto;
   align-items: center;
   column-gap: 0.85rem;
   row-gap: 0.45rem;
   padding: 0.5rem 0.75rem;
   min-height: 4.65rem;
+  overflow: visible;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: rgba(15, 17, 24, 0.94);
@@ -507,16 +508,30 @@ section {
   grid-row: 1 / -1;
   align-self: center;
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
-  column-gap: 0.45rem;
-  row-gap: 0.28rem;
+  grid-template-columns: max-content minmax(14.5rem, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 0.5rem;
+  row-gap: 0.38rem;
   align-items: center;
   justify-items: stretch;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   min-height: 0;
+  padding-top: 0.65rem;
+  overflow: visible;
+}
+
+.music-rail-seek-line,
+.music-rail-vol-line {
+  display: contents;
+}
+
+.music-rail-slot {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  align-self: center;
 }
 
 .music-time-current {
@@ -524,17 +539,13 @@ section {
   grid-row: 1;
   text-align: left;
   justify-self: start;
+  align-self: center;
   min-width: 0;
 }
 
-.music-rail-total-wrap {
+.music-rail-seek-line .music-rail-slot {
   grid-column: 2;
   grid-row: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: baseline;
-  min-width: 0;
-  width: 100%;
 }
 
 .music-time {
@@ -546,13 +557,21 @@ section {
   white-space: nowrap;
 }
 
+.music-rail-slot .music-time-total {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 0.2rem;
+  text-align: right;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .music-time-total {
   text-align: right;
 }
 
 .music-seek {
-  grid-column: 2;
-  grid-row: 2;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -560,6 +579,7 @@ section {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  display: block;
   accent-color: var(--accent);
   cursor: pointer;
   border-radius: 3px;
@@ -651,7 +671,7 @@ section {
 
 .music-vol-label {
   grid-column: 1;
-  grid-row: 3;
+  grid-row: 2;
   align-self: center;
   margin: 0;
   text-align: left;
@@ -664,9 +684,13 @@ section {
   white-space: nowrap;
 }
 
-.music-vol-slider {
+.music-rail-vol-line .music-rail-slot {
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 2;
+}
+
+.music-vol-slider {
+  /* Volume fills the same .music-rail-slot width as seek; duration is anchored to seek slot’s right. */
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -674,6 +698,7 @@ section {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  display: block;
   accent-color: var(--accent);
   cursor: pointer;
 }
@@ -716,20 +741,51 @@ section {
   }
 
   .music-sliders-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
     grid-column: 1 / -1;
     grid-row: 2;
     min-width: 0;
     width: 100%;
     max-width: 100%;
-    row-gap: 0.4rem;
+    padding-top: 0;
   }
 
-  .music-rail-total-wrap {
+  .music-rail-seek-line,
+  .music-rail-vol-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .music-rail-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.22rem;
+    flex: 1;
     min-width: 0;
+  }
+
+  .music-rail-slot .music-time-total {
+    position: static;
+    align-self: flex-end;
+    margin-bottom: 0;
+    pointer-events: none;
   }
 
   .music-time-current {
+    grid-column: unset;
+    grid-row: unset;
     min-width: 0;
+  }
+
+  .music-vol-label {
+    grid-column: unset;
+    grid-row: unset;
   }
 
   .music-seek,
