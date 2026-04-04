@@ -22,6 +22,9 @@
   var btnPrev = document.getElementById("musicPrev");
   var btnNext = document.getElementById("musicNext");
   var volInput = document.getElementById("musicVol");
+  var seekInput = document.getElementById("musicSeek");
+  var timeCurrentEl = document.getElementById("musicTimeCurrent");
+  var timeTotalEl = document.getElementById("musicTimeTotal");
   var splash = document.getElementById("splash");
   var splashStars = document.getElementById("splashStars");
   var siteWrap = document.getElementById("siteWrap");
@@ -38,6 +41,40 @@
   var entered = false;
   var duckingForVideo = false;
   var musicMutedBeforeDuck = false;
+  var seekDragging = false;
+
+  function formatTime(sec) {
+    if (!isFinite(sec) || sec < 0) {
+      return "0:00";
+    }
+    var m = Math.floor(sec / 60);
+    var s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function updateSeekUi() {
+    if (!seekInput || !timeCurrentEl || !timeTotalEl) {
+      return;
+    }
+    var d = audio.duration;
+    timeCurrentEl.textContent = formatTime(audio.currentTime);
+    timeTotalEl.textContent = isFinite(d) ? formatTime(d) : "0:00";
+    if (!seekDragging && isFinite(d) && d > 0) {
+      var pct = (audio.currentTime / d) * 100;
+      seekInput.value = String(pct);
+      seekInput.setAttribute("aria-valuenow", String(Math.round(pct)));
+    }
+  }
+
+  function resetSeekUi() {
+    if (!seekInput || !timeCurrentEl || !timeTotalEl) {
+      return;
+    }
+    seekInput.value = "0";
+    seekInput.setAttribute("aria-valuenow", "0");
+    timeCurrentEl.textContent = "0:00";
+    timeTotalEl.textContent = "0:00";
+  }
 
   function anyShowcaseVideoPlaying() {
     var list = document.querySelectorAll("#work video");
@@ -119,6 +156,7 @@
     audio.volume = parseFloat(volInput.value);
     reflectVolumeUi();
     syncMusicDuck();
+    resetSeekUi();
   }
 
   function playCurrent() {
@@ -215,6 +253,31 @@
     audio.volume = parseFloat(volInput.value);
     reflectVolumeUi();
   });
+
+  if (seekInput) {
+    seekInput.addEventListener("pointerdown", function () {
+      seekDragging = true;
+    });
+    seekInput.addEventListener("pointerup", function () {
+      seekDragging = false;
+      updateSeekUi();
+    });
+    seekInput.addEventListener("pointercancel", function () {
+      seekDragging = false;
+      updateSeekUi();
+    });
+    seekInput.addEventListener("input", function () {
+      var d = audio.duration;
+      if (!isFinite(d) || d <= 0) {
+        return;
+      }
+      audio.currentTime = (parseFloat(seekInput.value) / 100) * d;
+    });
+  }
+
+  audio.addEventListener("timeupdate", updateSeekUi);
+  audio.addEventListener("loadedmetadata", updateSeekUi);
+  audio.addEventListener("durationchange", updateSeekUi);
 
   document.querySelectorAll("#work video").forEach(function (video) {
     video.addEventListener("play", syncMusicDuck);
