@@ -69,6 +69,7 @@
   var duckingForVideo = false;
   var musicMutedBeforeDuck = false;
   var seekDragging = false;
+  var seekBarReady = false;
 
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) {
@@ -85,7 +86,9 @@
     }
     var d = audio.duration;
     timeCurrentEl.textContent = formatTime(audio.currentTime);
-    timeTotalEl.textContent = isFinite(d) ? formatTime(d) : "0:00";
+    if (isFinite(d) && d > 0) {
+      timeTotalEl.textContent = formatTime(d);
+    }
     if (!seekDragging && isFinite(d) && d > 0) {
       var pct = (audio.currentTime / d) * 100;
       seekInput.value = String(pct);
@@ -100,7 +103,7 @@
     seekInput.value = "0";
     seekInput.setAttribute("aria-valuenow", "0");
     timeCurrentEl.textContent = "0:00";
-    timeTotalEl.textContent = "0:00";
+    timeTotalEl.textContent = "–:–";
   }
 
   function anyShowcaseVideoPlaying() {
@@ -178,12 +181,34 @@
 
   function applyTrack() {
     var item = playlist[idx];
+    var metaDone = false;
+    function onTrackMeta() {
+      if (metaDone) {
+        return;
+      }
+      metaDone = true;
+      seekBarReady = true;
+      try {
+        audio.currentTime = 0;
+      } catch (eT) {}
+      updateSeekUi();
+    }
+    seekBarReady = false;
+    audio.pause();
     titleEl.textContent = item.title;
     audio.src = item.src;
+    try {
+      audio.load();
+    } catch (eLoad) {}
     audio.volume = parseFloat(volInput.value);
     reflectVolumeUi();
     syncMusicDuck();
     resetSeekUi();
+    updatePlayButton();
+    audio.addEventListener("loadedmetadata", onTrackMeta, { once: true });
+    if (audio.readyState >= 1) {
+      onTrackMeta();
+    }
   }
 
   function playCurrent() {
@@ -214,6 +239,15 @@
     }
     var n = parseFloat(s);
     return isNaN(n) ? 0 : n;
+  }
+
+  /* Keep in sync with styles.css: .music-dock-inner.intro-appear --enter-order + stagger */
+  var MUSIC_DOCK_ENTER_ORDER = 12;
+  var MUSIC_START_BEFORE_DOCK_MS = 160;
+
+  function musicDockDropDelayMs() {
+    var stepMs = window.matchMedia("(min-width: 721px)").matches ? 65 : 110;
+    return MUSIC_DOCK_ENTER_ORDER * stepMs;
   }
 
   function maxIntroAnimationEndMs() {
@@ -265,6 +299,12 @@
     }
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
+        var dockDelay = musicDockDropDelayMs();
+        var musicAt = Math.max(0, dockDelay - MUSIC_START_BEFORE_DOCK_MS);
+        window.setTimeout(function () {
+          beginMusicPlayback();
+        }, musicAt);
+
         var wait = maxIntroAnimationEndMs() + 80;
         if (wait <= 80) {
           wait = 3200;
@@ -272,7 +312,6 @@
         window.setTimeout(function () {
           forcePageTop();
           document.body.classList.add("intro-reveal-done");
-          beginMusicPlayback();
         }, wait);
       });
     });
@@ -371,9 +410,18 @@
     });
   }
 
-  audio.addEventListener("timeupdate", updateSeekUi);
-  audio.addEventListener("loadedmetadata", updateSeekUi);
-  audio.addEventListener("durationchange", updateSeekUi);
+  audio.addEventListener("timeupdate", function () {
+    if (!seekBarReady) {
+      return;
+    }
+    updateSeekUi();
+  });
+  audio.addEventListener("durationchange", function () {
+    if (!seekBarReady) {
+      return;
+    }
+    updateSeekUi();
+  });
 
   document.querySelectorAll("#work video").forEach(function (video) {
     video.addEventListener("play", syncMusicDuck);
