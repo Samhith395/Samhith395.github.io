@@ -108,59 +108,56 @@
       </main>
     </div>
 
-    <div class="music-dock" role="region" aria-label="Background music">
+    <aside class="audio-bar" role="region" aria-label="Background music">
       <label class="sr-only" for="musicSeek">Seek track</label>
-      <div class="music-dock-inner intro-appear">
-        <div class="music-dock-left">
-          <div class="music-now">
-            <span class="music-now-label">Now playing</span>
-            <span class="music-title" id="musicTitle">—</span>
+      <div class="audio-bar__card intro-appear">
+        <div class="audio-bar__top">
+          <header class="audio-bar__meta">
+            <p class="audio-bar__eyebrow">Now playing</p>
+            <p class="audio-bar__song" id="musicTitle">—</p>
+          </header>
+          <div class="audio-bar__controls" role="group" aria-label="Playback">
+            <button type="button" class="audio-bar__ctrl" id="musicPrev" aria-label="Previous track">‹</button>
+            <button type="button" class="audio-bar__ctrl audio-bar__ctrl--play" id="musicPlay" aria-label="Play">
+              ▶
+            </button>
+            <button type="button" class="audio-bar__ctrl" id="musicNext" aria-label="Next track">›</button>
           </div>
         </div>
-        <div class="music-transport">
-          <button type="button" class="music-btn" id="musicPrev" aria-label="Previous track">
-            ‹
-          </button>
-          <button
-            type="button"
-            class="music-btn music-btn-primary"
-            id="musicPlay"
-            aria-label="Play"
-          >
-            ▶
-          </button>
-          <button type="button" class="music-btn" id="musicNext" aria-label="Next track">›</button>
-        </div>
-        <div class="music-dock-right">
-          <div class="music-controls">
-            <span class="music-time music-time-current" id="musicTimeCurrent" aria-hidden="true">0:00</span>
-            <input
-              type="range"
-              class="music-seek"
-              id="musicSeek"
-              min="0"
-              max="100"
-              value="0"
-              step="0.1"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-valuenow="0"
-            />
-            <span class="music-time music-time-total" id="musicTimeTotal" aria-hidden="true">0:00</span>
-            <label class="music-vol-label" for="musicVol">Volume</label>
-            <input
-              type="range"
-              class="music-vol-slider"
-              id="musicVol"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.5"
-            />
+
+        <div class="audio-bar__progress">
+          <div class="audio-bar__times">
+            <span id="musicTimeCurrent" aria-hidden="true">0:00</span>
+            <span id="musicTimeTotal" aria-hidden="true">–:–</span>
           </div>
+          <input
+            type="range"
+            class="audio-bar__slider"
+            id="musicSeek"
+            min="0"
+            max="100"
+            value="0"
+            step="0.1"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          />
+        </div>
+
+        <div class="audio-bar__gain">
+          <label class="audio-bar__gain-label" for="musicVol">Volume</label>
+          <input
+            type="range"
+            class="audio-bar__slider"
+            id="musicVol"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
         </div>
       </div>
-    </div>
+    </aside>
     <audio id="musicEngine" class="sr-only" preload="auto" aria-hidden="true"></audio>
 
     <script src="script.js" defer></script>

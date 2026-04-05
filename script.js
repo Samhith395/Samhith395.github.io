@@ -241,7 +241,7 @@
     return isNaN(n) ? 0 : n;
   }
 
-  /* Keep in sync with styles.css: .music-dock-inner.intro-appear --enter-order + stagger */
+  /* Keep in sync with styles.css: .audio-bar__card.intro-appear --enter-order + stagger */
   var MUSIC_DOCK_ENTER_ORDER = 12;
   var MUSIC_START_BEFORE_DOCK_MS = 160;
 
