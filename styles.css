@@ -700,7 +700,7 @@ section {
   .audio-bar__card {
     padding: 0.5rem 0.75rem 0.55rem;
     gap: 0.42rem;
-    border-radius: 9999px;
+    border-radius: var(--radius);
   }
 
   .audio-bar__top {
