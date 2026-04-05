@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Advanced roblox scripter with over 4 years of experience."
+    />
+    <!-- Open Graph / Twitter mirror the same blurb for link previews -->
+    <meta property="og:title" content="Samhith — Advanced Roblox Scripter" />
+    <meta
+      property="og:description"
+      content="Advanced roblox scripter with over 4 years of experience."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://samhith395.github.io/Portfolio/" />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:description"
+      content="Advanced roblox scripter with over 4 years of experience."
+    />
+    <title>Samhith — Advanced Roblox Scripter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="sr-only" href="#main" id="skipLink">Skip to content</a>
+
+    <button type="button" id="splash" class="splash" aria-label="Enter portfolio">
+      <span class="splash-stars" id="splashStars" aria-hidden="true"></span>
+      <span class="splash-glow" aria-hidden="true"></span>
+      <span class="splash-inner">
+        <span class="splash-title" role="heading" aria-level="1">Welcome</span>
+        <span class="splash-hint">Tap to continue</span>
+      </span>
+    </button>
+
+    <div class="site-wrap" id="siteWrap" inert>
+      <header class="site-header">
+        <div class="header-inner">
+          <nav class="intro-appear" aria-label="Primary">
+            <ul class="nav-links">
+              <li><a href="#about">About</a></li>
+              <li><a href="#work">Work</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <div id="about" class="hero">
+          <p class="hero-badge intro-appear">Advanced Roblox Scripter</p>
+          <h1 class="intro-appear">Samhith</h1>
+          <p class="hero-lead intro-appear">
+            Roblox scripter with 4+ years of experience, focused on building scalable, modular systems
+            with emphasis on performance, responsiveness, and maintainability. I design systems that
+            stay stable under complex interactions and multi-entity scenarios.
+          </p>
+          <div class="hero-meta" role="list">
+            <span class="pill intro-appear" role="listitem">Modular systems</span>
+            <span class="pill intro-appear" role="listitem">Performance-focused</span>
+            <span class="pill intro-appear" role="listitem">Maintainable &amp; scalable systems</span>
+          </div>
+        </div>
+
+        <section id="work" aria-labelledby="work-heading">
+          <h2 id="work-heading" class="section-title intro-appear">Past works</h2>
+          <div class="work-grid">
+            <article class="work-card intro-appear">
+              <h3>Combat system</h3>
+              <p>
+                A reusable combat framework handling input processing, state control, and interaction
+                consistency across entities. Built to remain stable under rapid input and stress
+                conditions.
+              </p>
+              <div class="demo-block">
+                <video controls playsinline preload="metadata" src="videos/combatsystem.mp4"></video>
+              </div>
+            </article>
+
+            <article class="work-card intro-appear">
+              <h3>Boss AI</h3>
+              <p>
+                State-driven boss behavior with dynamic responses based on player interaction.
+                Structured for extensibility without modifying core logic.
+              </p>
+              <div class="demo-block">
+                <video controls playsinline preload="metadata" src="videos/bossai.mp4"></video>
+              </div>
+            </article>
+
+            <article class="work-card intro-appear">
+              <h3>Placement system</h3>
+              <p>
+                A responsive placement system with validation, rotation, and real-time feedback
+                optimized for smooth user interaction.
+              </p>
+              <div class="demo-block">
+                <video controls playsinline preload="metadata" src="videos/placementsystem.mp4"></video>
+              </div>
+            </article>
+
+            <article class="work-card intro-appear">
+              <h3>Wave system</h3>
+              <p>
+                A scalable wave system managing spawning, difficulty progression, and coordinated
+                enemy behavior across multiple entities.
+              </p>
+              <div class="demo-block">
+                <video controls playsinline preload="metadata" src="videos/wavesystem.mp4"></video>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <aside class="audio-bar" role="region" aria-label="Background music">
+      <label class="sr-only" for="musicSeek">Seek track</label>
+      <div class="audio-bar__card intro-appear">
+        <div class="audio-bar__top">
+          <header class="audio-bar__meta">
+            <p class="audio-bar__eyebrow">Now playing</p>
+            <p class="audio-bar__song" id="musicTitle">—</p>
+          </header>
+          <div class="audio-bar__controls" role="group" aria-label="Playback">
+            <button type="button" class="audio-bar__ctrl" id="musicPrev" aria-label="Previous track">‹</button>
+            <button type="button" class="audio-bar__ctrl audio-bar__ctrl--play" id="musicPlay" aria-label="Play">
+              ▶
+            </button>
+            <button type="button" class="audio-bar__ctrl" id="musicNext" aria-label="Next track">›</button>
+          </div>
+        </div>
+
+        <div class="audio-bar__progress">
+          <div class="audio-bar__times">
+            <span id="musicTimeCurrent" aria-hidden="true">0:00</span>
+            <span id="musicTimeTotal" aria-hidden="true">–:–</span>
+          </div>
+          <input
+            type="range"
+            class="audio-bar__slider"
+            id="musicSeek"
+            min="0"
+            max="100"
+            value="0"
+            step="0.1"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          />
+        </div>
+
+        <div class="audio-bar__gain">
+          <label class="audio-bar__gain-label" for="musicVol">Volume</label>
+          <input
+            type="range"
+            class="audio-bar__slider"
+            id="musicVol"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
+        </div>
+      </div>
+    </aside>
+    <audio id="musicEngine" class="sr-only" preload="auto" aria-hidden="true"></audio>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
