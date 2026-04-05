@@ -2,12 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content="0; url=Portfolio/" />
+    <script>
+      (function () {
+        var u = new URL("Portfolio/", location.origin);
+        u.search = location.search;
+        u.hash = location.hash;
+        location.replace(u.href);
+      })();
+    </script>
+    <meta http-equiv="refresh" content="0; url=/Portfolio/" />
     <link rel="canonical" href="https://samhith395.github.io/Portfolio/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Samhith — Redirect</title>
   </head>
   <body>
-    <p><a href="Portfolio/">Open portfolio</a></p>
+    <p><a href="/Portfolio/">Open portfolio</a></p>
   </body>
 </html>
