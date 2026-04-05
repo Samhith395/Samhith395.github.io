@@ -10,10 +10,8 @@
   }
 
   var playlist = [
-    trackEntry("And Then is Heard No More.mp3", "And Then is Heard No More"),
-    trackEntry("ChesedBattle01.mp3", "Chesed Battle 01"),
-    trackEntry("Gone Angels.mp3"),
-    trackEntry("Iron Lotus.mp3"),
+    trackEntry("Between Two Worlds - Realm Of Darkness.mp3"),
+    trackEntry("Between Two Worlds.mp3"),
   ];
 
   var audio = document.getElementById("musicEngine");
