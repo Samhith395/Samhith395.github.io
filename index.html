@@ -2,6 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #07080c;
+      }
+    </style>
     <script>
       (function () {
         var u = new URL("Portfolio/", location.origin);
@@ -16,6 +24,11 @@
     <title>Samhith — Redirect</title>
   </head>
   <body>
-    <p><a href="/Portfolio/">Open portfolio</a></p>
+    <noscript>
+      <p style="margin: 1rem; font-family: system-ui, sans-serif;">
+        <a href="/Portfolio/" style="color: #00a2ff">Open portfolio</a>
+        (JavaScript is off — use this link.)
+      </p>
+    </noscript>
   </body>
 </html>
