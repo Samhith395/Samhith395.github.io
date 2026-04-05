@@ -584,12 +584,9 @@ section {
 }
 
 .audio-bar__ctrl--play {
-  width: 2.72rem;
-  height: 2.72rem;
   border-color: rgba(0, 162, 255, 0.48);
   background: linear-gradient(165deg, rgba(0, 162, 255, 0.22) 0%, rgba(0, 162, 255, 0.08) 100%);
   color: var(--accent);
-  font-size: 1.08rem;
   padding-left: 0.125rem;
   box-shadow: 0 0 28px rgba(0, 162, 255, 0.18);
 }
@@ -763,12 +760,6 @@ section {
     height: 2.1rem;
     font-size: 0.98rem;
     border-radius: 10px;
-  }
-
-  .audio-bar__ctrl--play {
-    width: 2.48rem;
-    height: 2.48rem;
-    font-size: 1.02rem;
   }
 
   .audio-bar {
