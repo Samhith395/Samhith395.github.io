@@ -70,6 +70,10 @@
   var musicMutedBeforeDuck = false;
   var seekDragging = false;
   var seekBarReady = false;
+  var seekRafId = null;
+  var seekUseRafProgress =
+    typeof matchMedia === "function" &&
+    !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) {
@@ -78,6 +82,78 @@
     var m = Math.floor(sec / 60);
     var s = Math.floor(sec % 60);
     return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  /** Sync --range-fill on range inputs so the track shows accent fill up to the thumb (WebKit + baseline for Firefox). */
+  function syncRangeFill(input) {
+    if (!input) {
+      return;
+    }
+    var min = parseFloat(input.min);
+    if (!isFinite(min)) {
+      min = 0;
+    }
+    var max = parseFloat(input.max);
+    if (!isFinite(max)) {
+      max = 100;
+    }
+    var val = parseFloat(input.value);
+    if (!isFinite(val)) {
+      val = min;
+    }
+    var pct = max === min ? 0 : ((val - min) / (max - min)) * 100;
+    if (pct < 0) {
+      pct = 0;
+    } else if (pct > 100) {
+      pct = 100;
+    }
+    input.style.setProperty("--range-fill", pct + "%");
+  }
+
+  syncRangeFill(volInput);
+  syncRangeFill(seekInput);
+
+  function stopSeekRafLoop() {
+    if (seekRafId != null) {
+      cancelAnimationFrame(seekRafId);
+      seekRafId = null;
+    }
+  }
+
+  /** While playing: ~60fps progress from audio.currentTime (smoother than timeupdate). */
+  function tickSeekRaf() {
+    seekRafId = null;
+    if (
+      !seekUseRafProgress ||
+      !seekBarReady ||
+      !seekInput ||
+      !timeCurrentEl ||
+      !timeTotalEl ||
+      seekDragging ||
+      audio.paused
+    ) {
+      return;
+    }
+    var d = audio.duration;
+    if (!isFinite(d) || d <= 0) {
+      return;
+    }
+    timeCurrentEl.textContent = formatTime(audio.currentTime);
+    timeTotalEl.textContent = formatTime(d);
+    var pct = (audio.currentTime / d) * 100;
+    seekInput.value = String(pct);
+    seekInput.setAttribute("aria-valuenow", String(Math.round(pct)));
+    syncRangeFill(seekInput);
+    seekRafId = requestAnimationFrame(tickSeekRaf);
+  }
+
+  function startSeekRafLoop() {
+    if (!seekUseRafProgress || !seekBarReady || !seekInput || seekDragging || audio.paused) {
+      return;
+    }
+    if (seekRafId == null) {
+      seekRafId = requestAnimationFrame(tickSeekRaf);
+    }
   }
 
   function updateSeekUi() {
@@ -94,14 +170,17 @@
       seekInput.value = String(pct);
       seekInput.setAttribute("aria-valuenow", String(Math.round(pct)));
     }
+    syncRangeFill(seekInput);
   }
 
   function resetSeekUi() {
     if (!seekInput || !timeCurrentEl || !timeTotalEl) {
       return;
     }
+    stopSeekRafLoop();
     seekInput.value = "0";
     seekInput.setAttribute("aria-valuenow", "0");
+    syncRangeFill(seekInput);
     timeCurrentEl.textContent = "0:00";
     timeTotalEl.textContent = "–:–";
   }
@@ -192,6 +271,7 @@
         audio.currentTime = 0;
       } catch (eT) {}
       updateSeekUi();
+      startSeekRafLoop();
     }
     seekBarReady = false;
     audio.pause();
@@ -202,6 +282,7 @@
     } catch (eLoad) {}
     audio.volume = parseFloat(volInput.value);
     reflectVolumeUi();
+    syncRangeFill(volInput);
     syncMusicDuck();
     resetSeekUi();
     updatePlayButton();
@@ -364,8 +445,17 @@
     step(1);
   });
 
-  audio.addEventListener("play", updatePlayButton);
-  audio.addEventListener("pause", updatePlayButton);
+  audio.addEventListener("play", function () {
+    updatePlayButton();
+    startSeekRafLoop();
+  });
+  audio.addEventListener("pause", function () {
+    stopSeekRafLoop();
+    updatePlayButton();
+    if (seekBarReady) {
+      updateSeekUi();
+    }
+  });
 
   btnPlay.addEventListener("click", function () {
     if (audio.paused) {
@@ -384,25 +474,40 @@
     step(1);
   });
 
+  volInput.addEventListener("pointerdown", function () {
+    volInput.classList.add("audio-bar__slider--dragging");
+  });
+  volInput.addEventListener("pointerup", function () {
+    volInput.classList.remove("audio-bar__slider--dragging");
+  });
+  volInput.addEventListener("pointercancel", function () {
+    volInput.classList.remove("audio-bar__slider--dragging");
+  });
+
   volInput.addEventListener("input", function () {
     audio.volume = parseFloat(volInput.value);
     reflectVolumeUi();
+    syncRangeFill(volInput);
   });
 
   if (seekInput) {
     seekInput.addEventListener("pointerdown", function () {
+      stopSeekRafLoop();
       seekDragging = true;
     });
     seekInput.addEventListener("pointerup", function () {
       seekDragging = false;
       updateSeekUi();
+      startSeekRafLoop();
     });
     seekInput.addEventListener("pointercancel", function () {
       seekDragging = false;
       updateSeekUi();
+      startSeekRafLoop();
     });
     seekInput.addEventListener("input", function () {
       var d = audio.duration;
+      syncRangeFill(seekInput);
       if (!isFinite(d) || d <= 0) {
         return;
       }
@@ -414,13 +519,16 @@
     if (!seekBarReady) {
       return;
     }
-    updateSeekUi();
+    if (!seekUseRafProgress || audio.paused) {
+      updateSeekUi();
+    }
   });
   audio.addEventListener("durationchange", function () {
     if (!seekBarReady) {
       return;
     }
     updateSeekUi();
+    startSeekRafLoop();
   });
 
   document.querySelectorAll("#work video").forEach(function (video) {
