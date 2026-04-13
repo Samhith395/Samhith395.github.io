@@ -58,8 +58,96 @@ body::after{
   z-index:0;
 }
 
+#lockscreen{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+
+.lock-glow{
+  width:80px;height:80px;
+  border:1.5px solid var(--accent);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:28px;
+  position:relative;
+  animation:pulse-ring 2.5s ease-in-out infinite;
+}
+.lock-glow svg{filter:drop-shadow(0 0 8px var(--accent))}
+
+@keyframes pulse-ring{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,0.3)}
+  50%{box-shadow:0 0 0 12px rgba(0,255,136,0)}
+}
+
+.lock-title{
+  font-size:11px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px;
+}
+.lock-sub{
+  font-size:22px;font-weight:800;
+  color:var(--text);margin-bottom:32px;
+  letter-spacing:-0.5px;
+}
+
+.lock-input-wrap{
+  position:relative;width:320px;margin-bottom:12px;
+}
+#pw-input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:13px 48px 13px 18px;
+  font-family:'DM Mono',monospace;
+  font-size:14px;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+  letter-spacing:2px;
+}
+#pw-input:focus{border-color:var(--accent)}
+#pw-input.error{border-color:var(--accent2);animation:shake 0.3s ease}
+#pw-input.success{border-color:var(--accent)}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+
+#pw-submit{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);padding:4px;
+  transition:color 0.2s;
+}
+#pw-submit:hover{color:var(--accent)}
+
+#pw-error{
+  font-size:11px;font-family:'DM Mono',monospace;
+  color:var(--accent2);
+  opacity:0;transition:opacity 0.2s;
+  text-align:center;margin-bottom:0;height:16px;
+}
+#pw-error.show{opacity:1}
+
+.lock-hint{
+  margin-top:20px;
+  font-size:10px;color:var(--dim);
+  font-family:'DM Mono',monospace;
+  letter-spacing:1px;
+}
+
 #vault{
-  display:block;
+  display:none;
   position:relative;
   z-index:1;
 }
@@ -70,18 +158,6 @@ body::after{
   margin:0 auto;
   position:relative;
 }
-
-.back-link{
-  display:inline-block;
-  font-family:'DM Mono',monospace;
-  font-size:10px;
-  letter-spacing:1px;
-  color:var(--muted);
-  text-decoration:none;
-  margin-bottom:16px;
-  transition:color 0.2s;
-}
-.back-link:hover{color:var(--accent)}
 
 .header-badge{
   display:inline-flex;align-items:center;gap:8px;
@@ -264,6 +340,7 @@ footer{
   align-items:center;
   gap:8px;
 }
+.lock-icon-sm{color:var(--accent);font-size:12px}
 
 #vault{opacity:0;transition:opacity 0.5s ease}
 #vault.shown{opacity:1}
@@ -272,9 +349,8 @@ footer{
 .site-title{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease}
 .site-sub{opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s ease}
 .header-divider{opacity:0;transform:scaleX(0);transform-origin:left;transition:opacity 0.6s ease,transform 0.6s ease}
-.back-link{opacity:0;transform:translateY(6px);transition:opacity 0.4s ease,transform 0.4s ease,color 0.2s}
 
-.header-badge.in,.site-title.in,.site-sub.in,.back-link.in{opacity:1;transform:translateY(0)}
+.header-badge.in,.site-title.in,.site-sub.in{opacity:1;transform:translateY(0)}
 .header-divider.in{opacity:1;transform:scaleX(1)}
 
 .card{opacity:0;transform:translateY(24px);transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,box-shadow 0.3s}
@@ -291,10 +367,31 @@ footer{
 </head>
 <body>
 
+<div id="lockscreen">
+  <div class="lock-glow">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="11" width="18" height="11" rx="2" stroke="#00ff88" stroke-width="1.5"/>
+      <path d="M7 11V7a5 5 0 0110 0v4" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="12" cy="16" r="1.5" fill="#00ff88"/>
+    </svg>
+  </div>
+  <p class="lock-title">CONCEPT VAULT</p>
+  <p class="lock-sub">restricted</p>
+  <div class="lock-input-wrap">
+    <input id="pw-input" type="password" placeholder="enter access code" autocomplete="off" spellcheck="false"/>
+    <button type="button" id="pw-submit" aria-label="Submit access code">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+  <p id="pw-error">incorrect access code</p>
+  <p class="lock-hint">// authorized personnel only</p>
+</div>
+
 <div id="vault">
 
 <header class="site-header">
-  <a class="back-link" href="/Portfolio/">← Portfolio</a>
   <div class="header-badge"><span class="badge-dot"></span>Live · 2 Concepts · 2026</div>
   <h1 class="site-title">Concept<br><span>Vault</span></h1>
   <p class="site-sub">// roblox game concepts — focused shortlist. pet races + ranked blade duel.</p>
@@ -408,24 +505,54 @@ footer{
 </main>
 
 <footer>
-  <span class="footer-left">2 concepts · 2026</span>
-  <span class="footer-right"><a class="back-link" href="/Portfolio/" style="margin:0;opacity:1;transform:none">Portfolio</a></span>
+  <span class="footer-left">2 concepts · internal use only · 2026</span>
+  <span class="footer-right"><span class="lock-icon-sm" aria-hidden="true">&#9672;</span> access restricted</span>
 </footer>
 
 </div>
 
 <script>
+/* Set your access code here. This is plain text in a public repo—treat it as a light gate only. */
+const CORRECT = 'CHANGE_ME';
+const input = document.getElementById('pw-input');
+const err = document.getElementById('pw-error');
+const submitBtn = document.getElementById('pw-submit');
+
+function checkPw(){
+  const val = input.value;
+  if(val === CORRECT){
+    const ls = document.getElementById('lockscreen');
+    ls.style.transition = 'opacity 0.6s ease';
+    ls.style.opacity = '0';
+    setTimeout(()=>{
+      ls.style.display = 'none';
+      const vault = document.getElementById('vault');
+      vault.style.display = 'block';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>animateCards()));
+    }, 600);
+  } else {
+    input.classList.remove('error');
+    void input.offsetWidth;
+    input.classList.add('error');
+    err.classList.add('show');
+    input.value = '';
+    setTimeout(()=>{input.classList.remove('error')},400);
+    setTimeout(()=>{err.classList.remove('show')},2000);
+  }
+}
+
+submitBtn.addEventListener('click', checkPw);
+input.addEventListener('keydown', e => { if(e.key === 'Enter') checkPw(); });
+
 function animateCards(){
   const vault = document.getElementById('vault');
   vault.classList.add('shown');
 
-  const back = document.querySelector('.site-header .back-link');
   const badge = document.querySelector('.header-badge');
   const title = document.querySelector('.site-title');
   const sub = document.querySelector('.site-sub');
   const divider = document.querySelector('.header-divider');
 
-  setTimeout(()=>{ back.classList.add('in'); }, 40);
   setTimeout(()=>{ badge.classList.add('in'); }, 100);
   setTimeout(()=>{ title.classList.add('in'); }, 220);
   setTimeout(()=>{ sub.classList.add('in'); }, 360);
@@ -436,10 +563,6 @@ function animateCards(){
     setTimeout(()=>{ c.classList.add('visible'); }, 600 + i * 90);
   });
 }
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  requestAnimationFrame(()=>requestAnimationFrame(animateCards));
-});
 </script>
 </body>
 </html>
