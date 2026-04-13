@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Roblox game concept notes — Pet Races and Blade Duel.">
+<link rel="canonical" href="https://samhith395.github.io/GameConcepts/">
+<title>Concept Vault — Game Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#080808;
+  --surface:#0f0f0f;
+  --card:#141414;
+  --inner:#1a1a1a;
+  --border:#222;
+  --border2:#2c2c2c;
+  --text:#e0e0e0;
+  --muted:#555;
+  --dim:#333;
+  --accent:#00ff88;
+  --accent2:#ff4466;
+  --accent3:#4488ff;
+  --gold:#ffcc44;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.4;
+}
+
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+
+#vault{
+  display:block;
+  position:relative;
+  z-index:1;
+}
+
+.site-header{
+  padding:56px 48px 0;
+  max-width:1100px;
+  margin:0 auto;
+  position:relative;
+}
+
+.back-link{
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:1px;
+  color:var(--muted);
+  text-decoration:none;
+  margin-bottom:16px;
+  transition:color 0.2s;
+}
+.back-link:hover{color:var(--accent)}
+
+.header-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  color:var(--accent);text-transform:uppercase;
+  margin-bottom:20px;
+}
+.badge-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+.site-title{
+  font-size:52px;font-weight:800;
+  letter-spacing:-2px;line-height:1;
+  color:#fff;margin-bottom:12px;
+}
+.site-title span{color:var(--accent)}
+
+.site-sub{
+  font-size:13px;color:var(--muted);
+  max-width:500px;line-height:1.7;
+  font-family:'DM Mono',monospace;
+  margin-bottom:40px;
+}
+
+.header-divider{
+  height:1px;
+  background:linear-gradient(90deg,var(--accent) 0%,transparent 60%);
+  margin-bottom:48px;
+  opacity:0.4;
+}
+
+.grid{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 48px 100px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:28px 30px 30px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.3s,transform 0.2s;
+}
+.card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background:var(--accent-line,var(--accent));
+  opacity:0.5;
+}
+.card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+}
+
+.card-num{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:6px;
+}
+.card-title{
+  font-size:24px;font-weight:800;
+  color:#fff;letter-spacing:-0.5px;
+  margin-bottom:5px;
+}
+.card-sub{
+  font-size:12.5px;color:#666;
+  line-height:1.6;margin-bottom:14px;
+  font-family:'DM Mono',monospace;
+}
+
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:0}
+.tag{
+  font-family:'DM Mono',monospace;
+  font-size:10px;font-weight:500;
+  padding:3px 10px;border-radius:3px;
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.tg{background:#0d2b1a;color:#00ff88;border:1px solid #1a4a2e}
+.ta{background:#2b1f00;color:#ffcc44;border:1px solid #4a3500}
+.tb{background:#001530;color:#4488ff;border:1px solid #003080}
+.tr{background:#2b0010;color:#ff4466;border:1px solid #4a0020}
+.tp{background:#1a0030;color:#aa66ff;border:1px solid #330060}
+.tw{background:#1a1a1a;color:#888;border:1px solid #333}
+
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--dim);margin:22px 0 10px;
+}
+
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.three-col{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.icard{
+  background:var(--inner);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:14px 16px;
+}
+.icard-title{
+  font-size:11px;font-weight:700;
+  color:#bbb;margin-bottom:10px;
+  letter-spacing:0.3px;
+}
+
+.bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bullets li{
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:#5a5a5a;
+  padding-left:14px;position:relative;line-height:1.5;
+}
+.bullets li::before{
+  content:'';position:absolute;
+  left:0;top:5px;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:var(--accent);
+  opacity:0.7;
+}
+
+.pillar-icon{
+  width:26px;height:26px;
+  border:1px solid var(--border2);
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:9px;
+}
+.pillar-title{font-size:12px;font-weight:700;color:#c0c0c0;margin-bottom:5px}
+.pillar-desc{
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:#444;line-height:1.6;
+}
+
+.diff-badge{
+  position:absolute;top:20px;right:20px;
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:4px 10px;border-radius:3px;
+}
+.diff-easy{background:#0a2010;color:#00cc66;border:1px solid #1a4a30}
+
+footer{
+  max-width:1100px;margin:0 auto;
+  padding:20px 48px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.footer-left{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--dim);letter-spacing:1px;
+}
+.footer-right{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--dim);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+#vault{opacity:0;transition:opacity 0.5s ease}
+#vault.shown{opacity:1}
+
+.header-badge{opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s ease}
+.site-title{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease}
+.site-sub{opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s ease}
+.header-divider{opacity:0;transform:scaleX(0);transform-origin:left;transition:opacity 0.6s ease,transform 0.6s ease}
+.back-link{opacity:0;transform:translateY(6px);transition:opacity 0.4s ease,transform 0.4s ease,color 0.2s}
+
+.header-badge.in,.site-title.in,.site-sub.in,.back-link.in{opacity:1;transform:translateY(0)}
+.header-divider.in{opacity:1;transform:scaleX(1)}
+
+.card{opacity:0;transform:translateY(24px);transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,box-shadow 0.3s}
+.card.visible{opacity:1;transform:translateY(0)}
+.card:hover{box-shadow:0 0 0 1px var(--border2),0 8px 32px rgba(0,0,0,0.4)}
+
+@media(max-width:700px){
+  .site-header,.grid{padding-left:20px;padding-right:20px}
+  .two-col,.three-col{grid-template-columns:1fr}
+  .site-title{font-size:34px}
+  .diff-badge{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="vault">
+
+<header class="site-header">
+  <a class="back-link" href="/Portfolio/">← Portfolio</a>
+  <div class="header-badge"><span class="badge-dot"></span>Live · 2 Concepts · 2026</div>
+  <h1 class="site-title">Concept<br><span>Vault</span></h1>
+  <p class="site-sub">// roblox game concepts — focused shortlist. pet races + ranked blade duel.</p>
+  <div class="header-divider"></div>
+</header>
+
+<main class="grid">
+
+<div class="card" style="--accent-line:#00ff88">
+  <span class="diff-badge diff-easy">Easy Build</span>
+  <p class="card-num">01 — Racing / Pets</p>
+  <h2 class="card-title">Pet Races</h2>
+  <p class="card-sub">collect and upgrade pets, race them on short tracks against other players' pets, and earn coins for cosmetics.</p>
+  <div class="tags">
+    <span class="tag tg">Pet Collector</span>
+    <span class="tag ta">Racing</span>
+    <span class="tag tw">Idle Grind</span>
+  </div>
+  <p class="section-label">Why this wins</p>
+  <div class="two-col">
+    <div class="icard">
+      <p class="icard-title">Roblox signals</p>
+      <ul class="bullets">
+        <li>Adopt Me 531K CCU — pet collecting is the platform's #1 proven loop</li>
+        <li>Pet Sim 99 — idle pet grind holds CCU for years</li>
+        <li>No pet racing game exists in the top 100</li>
+        <li>Short 60-second races = max shareable clip length</li>
+      </ul>
+    </div>
+    <div class="icard">
+      <p class="icard-title">Why it's easy to build</p>
+      <ul class="bullets">
+        <li>Linear track — no open world needed</li>
+        <li>Pets are stat blocks + models, not complex AI</li>
+        <li>Race logic = simple speed + RNG modifier calculation</li>
+        <li>Full game scope achievable in 4–6 weeks solo</li>
+      </ul>
+    </div>
+  </div>
+  <p class="section-label">Core pillars</p>
+  <div class="three-col">
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="#555" stroke-width="1.1"/><path d="M4 6.5h5M6.5 4v5" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+      <p class="pillar-title">Hatch & collect</p>
+      <p class="pillar-desc">Egg hatching with rarity tiers. Common to Mythic pets. Each pet has 3 stats: speed, stamina, luck. Duplicates merge into stronger versions.</p>
+    </div>
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 9c2-4 7-4 9 0" stroke="#555" stroke-width="1.1" stroke-linecap="round"/><circle cx="3" cy="10" r="1.2" stroke="#555" stroke-width="1"/><circle cx="10" cy="10" r="1.2" stroke="#555" stroke-width="1"/></svg></div>
+      <p class="pillar-title">Race live</p>
+      <p class="pillar-desc">8-player races, 60 seconds. Your pet runs automatically — stats determine outcome with small RNG variance. Spectate others. Replay last race.</p>
+    </div>
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5L8 5h3.5L9 7.5l1 3.5-3.5-2-3.5 2 1-3.5L1.5 5H5z" stroke="#555" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <p class="pillar-title">Earn & upgrade</p>
+      <p class="pillar-desc">Win coins, spend on food items that boost stats temporarily. Cosmetic trails and race auras sold for Robux. Seasonal tournament with exclusive egg prize.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="--accent-line:#aa66ff">
+  <span class="diff-badge diff-easy">Easy Build</span>
+  <p class="card-num">02 — PvP / Ranked</p>
+  <h2 class="card-title">Blade Duel</h2>
+  <p class="card-sub">1v1 sword fighting with a small move set, big skill gap, and a ranked ladder. think classic roblox sword fight but with modern ranked seasons and cosmetics.</p>
+  <div class="tags">
+    <span class="tag tp">1v1 PvP</span>
+    <span class="tag tr">Ranked</span>
+    <span class="tag tw">Skill-Based</span>
+  </div>
+  <p class="section-label">Why this wins</p>
+  <div class="two-col">
+    <div class="icard">
+      <p class="icard-title">Roblox signals</p>
+      <ul class="bullets">
+        <li>Classic Sword Fight on the Heights — ancient game, still 5K+ CCU passively</li>
+        <li>BedWars proves ranked PvP with cosmetics is a top-10 CCU formula</li>
+        <li>1v1 format = no matchmaking wait, instant session start</li>
+        <li>Skill gap = competitive players never leave — they chase rank forever</li>
+      </ul>
+    </div>
+    <div class="icard">
+      <p class="icard-title">Why it's easy to build</p>
+      <ul class="bullets">
+        <li>Sword combat = hitbox check + damage value. Roblox's most-understood system.</li>
+        <li>Arena is a single small map — 30 minute build</li>
+        <li>Ranked = win/loss ELO calculation, one script</li>
+        <li>3-move kit means no complex ability system needed at launch</li>
+      </ul>
+    </div>
+  </div>
+  <p class="section-label">Core pillars</p>
+  <div class="three-col">
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 2L4 7l-1.5 3.5L5 9l5-5-1-2z" stroke="#555" stroke-width="1.1" stroke-linejoin="round"/><path d="M9 2l2 2" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+      <p class="pillar-title">Fight clean</p>
+      <p class="pillar-desc">3-move kit: slash, block, dash. Simple enough to learn in 10 seconds, deep enough to master over 100 hours. Block timing creates a skill gap no amount of grinding can bypass.</p>
+    </div>
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10L5.5 4l2 3.5L9.5 3 11 10H2z" stroke="#555" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <p class="pillar-title">Climb ranked</p>
+      <p class="pillar-desc">ELO-based 1v1 matchmaking. 6 rank tiers — Bronze to Legend. Season resets keep the ladder competitive. Top 10 Legend players get a nameplate visible server-wide.</p>
+    </div>
+    <div class="icard">
+      <div class="pillar-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5L8 5h3.5L9 7.5l1 3.5-3.5-2-3.5 2 1-3.5L1.5 5H5z" stroke="#555" stroke-width="1.1" stroke-linejoin="round"/></svg></div>
+      <p class="pillar-title">Flex cosmetics</p>
+      <p class="pillar-desc">Blade skins, kill effects, idle animations — all cosmetic, Robux only. Rank-exclusive blade effect for each tier. Season-end exclusive skin for top 100. Zero P2W.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <span class="footer-left">2 concepts · 2026</span>
+  <span class="footer-right"><a class="back-link" href="/Portfolio/" style="margin:0;opacity:1;transform:none">samhith395.github.io</a></span>
+</footer>
+
+</div>
+
+<script>
+function animateCards(){
+  const vault = document.getElementById('vault');
+  vault.classList.add('shown');
+
+  const back = document.querySelector('.site-header .back-link');
+  const badge = document.querySelector('.header-badge');
+  const title = document.querySelector('.site-title');
+  const sub = document.querySelector('.site-sub');
+  const divider = document.querySelector('.header-divider');
+
+  setTimeout(()=>{ back.classList.add('in'); }, 40);
+  setTimeout(()=>{ badge.classList.add('in'); }, 100);
+  setTimeout(()=>{ title.classList.add('in'); }, 220);
+  setTimeout(()=>{ sub.classList.add('in'); }, 360);
+  setTimeout(()=>{ divider.classList.add('in'); }, 480);
+
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((c,i)=>{
+    setTimeout(()=>{ c.classList.add('visible'); }, 600 + i * 90);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  requestAnimationFrame(()=>requestAnimationFrame(animateCards));
+});
+</script>
+</body>
+</html>
